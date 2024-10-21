@@ -4,6 +4,7 @@ const path = require('path');
 const app = express();
 const port = 9999;
 const data = require('./data.json');
+const { Parser } = require('json2csv');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname + '/../views'));
@@ -19,6 +20,23 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
     console.log(req.body);
+
+    const fields = req.body.fields.map( element => ({
+        label: element,
+        value: element
+    }))
+
+    const dataCSV = data.map( row => {
+        const r = {};
+        fields.forEach( field => {
+            r[field.value] = row[field.value];
+        });
+        return r;
+    })
+
+    console.log(dataCSV);
+    
+
     res.redirect('back');
     
 });
